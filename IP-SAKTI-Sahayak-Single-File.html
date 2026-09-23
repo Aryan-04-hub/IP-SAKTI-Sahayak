@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<title>IP-SAKTI | Sahayak</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#123a6b">
+
+<!-- IP-SAKTI SAHAYAK: consolidated single-file frontend -->
+<style>
+/* IP-SAKTI · Sahayak — theme tokens */
+:root{
+  --bg:#f3f5f9;
+  --surface:#ffffff;
+  --surface-2:#f7f9fc;
+  --raise:#eef2f8;
+  --border:#dfe5ee;
+  --border-soft:#e9edf4;
+  --text:#141d2e;
+  --muted:#5f6c80;
+  --faint:#8a95a6;
+  --accent:#1a4fa0;
+  --accent-2:#2f6fd0;
+  --accent-soft:#e7f0ff;
+  --saffron:#c2711c;
+  --green:#127a52;
+  --green-soft:#e2f5ec;
+  --amber:#8a5b00;
+  --amber-soft:#fdf0d6;
+  --violet:#5a3fb5;
+  --violet-soft:#eeeaff;
+  --red:#a6322f;
+  --red-soft:#fdeaea;
+  --shadow:0 1px 2px rgba(18,30,52,.06), 0 10px 26px rgba(18,30,52,.07);
+  --radius:12px;
+}
+html[data-theme="dark"]{
+  --bg:#0e1420;
+  --surface:#141c2b;
+  --surface-2:#18212f;
+  --raise:#1d2737;
+  --border:#263247;
+  --border-soft:#1f2a3b;
+  --text:#e6ecf6;
+  --muted:#9aa8bd;
+  --faint:#76839a;
+  --accent:#7aa8f5;
+  --accent-2:#8fb8fb;
+  --accent-soft:#1b2a45;
+  --saffron:#e3a662;
+  --green:#5fd3a4;
+  --green-soft:#12362a;
+  --amber:#e7bc6a;
+  --amber-soft:#3a2e13;
+  --violet:#b3a3ff;
+  --violet-soft:#262046;
+  --red:#f09090;
+  --red-soft:#3a1f1f;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:"Segoe UI","Noto Sans",system-ui,-apple-system,"Noto Sans Devanagari","Noto Sans Tamil",Arial,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+button,textarea,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent-2);outline-offset:2px;border-radius:6px}
+
+.app{display:flex;min-height:100%}
+
+/* ---------- sidebar ---------- */
+.sidebar{
+  width:272px;flex-shrink:0;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;
+}
+.brand{display:flex;gap:12px;align-items:center;padding:20px 18px;border-bottom:1px solid var(--border-soft)}
+.logo{width:38px;height:38px;border-radius:10px;background:linear-gradient(150deg,var(--accent),var(--accent-2));color:#fff;display:grid;place-items:center}
+.brand h2{margin:0;font-size:17px;letter-spacing:.3px}
+.brand p{margin:2px 0 0;font-size:12.5px;color:var(--muted)}
+.menu{padding:14px 10px;overflow-y:auto}
+.title{margin:14px 10px 6px;font-size:11.5px;color:var(--faint);letter-spacing:.4px}
+.menu .title:first-child{margin-top:2px}
+.item{
+  width:100%;border:1px solid transparent;background:transparent;cursor:pointer;
+  display:flex;align-items:center;gap:12px;text-align:left;
+  padding:9px 11px;margin-bottom:2px;border-radius:9px;
+}
+.item:hover{background:var(--raise)}
+.item.active{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 30%,transparent);color:var(--accent)}
+.item .ico{width:26px;height:26px;flex-shrink:0;display:grid;place-items:center;border-radius:7px;background:var(--raise);color:var(--muted);font-size:13px}
+.item.active .ico{background:var(--surface);color:var(--accent)}
+.item b{display:block;font-size:14.5px;font-weight:600}
+.item small{display:block;font-size:11.5px;color:var(--faint);margin-top:2px}
+.item.active small{color:color-mix(in srgb,var(--accent) 70%,var(--muted))}
+.coverage{margin-top:auto;padding:16px 18px;border-top:1px solid var(--border-soft);font-size:12px;color:var(--muted)}
+.coverage p{margin:6px 0 0}
+.coverage .sources{color:var(--faint)}
+.pill{display:inline-block;padding:1px 5px;border-radius:4px;background:var(--raise);font-size:10.5px}
+
+/* ---------- topbar ---------- */
+.main{flex:1;min-width:0;display:flex;flex-direction:column}
+.topbar{
+  position:sticky;top:0;z-index:5;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:16px 26px;display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;
+}
+.topbar h1{margin:0;font-size:20px;letter-spacing:.2px}
+.topbar p{margin:5px 0 0;color:var(--muted);font-size:13.5px}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.languages{display:flex;gap:4px;background:var(--surface);border:1px solid var(--border);padding:3px;border-radius:9px}
+.lang{background:transparent;border:0;color:var(--muted);border-radius:6px;padding:6px 10px;cursor:pointer;font-size:13px}
+.lang:hover{background:var(--raise)}
+.lang.active{background:var(--accent);color:#fff}
+html[data-theme="dark"] .lang.active{color:#0e1420}
+.theme{display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:7px 12px;cursor:pointer;font-size:13px;color:var(--muted)}
+.theme:hover{background:var(--raise)}
+
+/* ---------- content ---------- */
+.content{flex:1;padding:22px 26px 40px;overflow-x:hidden}
+.content.with-composer{padding-bottom:150px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+
+/* toolbar */
+.toolbar{padding:16px 18px;border-bottom:1px solid var(--border-soft)}
+.search{
+  width:min(380px,100%);padding:10px 13px;border-radius:9px;
+  border:1px solid var(--border);background:var(--surface-2);outline:none;
+}
+.search:focus{border-color:var(--accent-2);background:var(--surface)}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:13px}
+.chip{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:7px;padding:6px 12px;cursor:pointer;font-size:13px}
+.chip:hover{background:var(--raise)}
+.chip.active{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent);color:var(--accent)}
+.count{margin-top:11px;font-size:12.5px;color:var(--faint)}
+
+/* tables */
+.table-scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:820px}
+th{
+  text-align:left;font-size:12px;font-weight:600;color:var(--faint);
+  padding:12px 16px;background:var(--surface-2);border-bottom:1px solid var(--border);
+  position:sticky;top:0;
+}
+td{padding:14px 16px;border-bottom:1px solid var(--border-soft);font-size:13.5px;vertical-align:top;line-height:1.5}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr:last-child td{border-bottom:0}
+.mono{font-family:"SFMono-Regular",Consolas,monospace;font-size:12.5px;color:var(--muted);white-space:nowrap}
+.strong{font-weight:600}
+.dim{color:var(--muted)}
+.nowrap{white-space:nowrap}
+
+/* badges */
+.badge{display:inline-block;padding:3px 9px;border-radius:999px;font-size:11.5px;font-weight:600;white-space:nowrap;border:1px solid transparent}
+.b-green{background:var(--green-soft);color:var(--green)}
+.b-amber{background:var(--amber-soft);color:var(--amber)}
+.b-blue{background:var(--accent-soft);color:var(--accent)}
+.b-violet{background:var(--violet-soft);color:var(--violet)}
+.b-red{background:var(--red-soft);color:var(--red)}
+.b-plain{background:var(--raise);color:var(--muted)}
+
+/* regulation cards */
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;padding:18px}
+.card{background:var(--surface-2);border:1px solid var(--border);border-radius:11px;padding:16px;cursor:pointer}
+.card:hover{border-color:color-mix(in srgb,var(--accent) 40%,var(--border))}
+.card h3{margin:0 0 8px;font-size:14.5px;line-height:1.4;padding-right:8px}
+.card p{margin:0;color:var(--muted);font-size:13px;line-height:1.55}
+.card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card-tags{display:flex;gap:6px;margin-top:11px;flex-wrap:wrap}
+
+/* empty state */
+.empty{padding:46px 20px;text-align:center;color:var(--muted)}
+.empty b{display:block;margin-bottom:6px;color:var(--text)}
+
+/* ---------- ask page ---------- */
+.ask-wrap{max-width:780px;margin:0 auto}
+.hero{
+  border:1px solid var(--border);border-radius:var(--radius);padding:20px;
+  background:linear-gradient(135deg,var(--accent-soft),var(--surface) 65%);
+  display:flex;gap:15px;box-shadow:var(--shadow);
+}
+.bot{width:44px;height:44px;flex-shrink:0;border-radius:12px;background:var(--surface);color:var(--accent);display:grid;place-items:center;font-size:20px;border:1px solid var(--border)}
+.hero h2{margin:2px 0 6px;font-size:18px}
+.hero p{margin:0;color:var(--muted);line-height:1.6;font-size:14px}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+.quick button{border:1px solid var(--border);background:var(--surface);color:var(--muted);border-radius:999px;padding:8px 14px;cursor:pointer;font-size:13px}
+.quick button:hover{background:var(--accent-soft);color:var(--accent);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+#chat{margin-top:6px}
+.message{margin:14px 0;padding:14px 16px;border-radius:12px;line-height:1.65;font-size:14px}
+.message.user{background:var(--accent);color:#fff;margin-left:20%;border-bottom-right-radius:4px}
+html[data-theme="dark"] .message.user{color:#0e1420}
+.message.answer{background:var(--surface);border:1px solid var(--border);margin-right:8%;border-bottom-left-radius:4px;box-shadow:var(--shadow)}
+.source{margin-top:12px;padding-top:10px;border-top:1px solid var(--border-soft);font-size:12px;color:var(--muted)}
+.confidence{display:inline-block;margin-top:9px;padding:3px 9px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:11px}
+.typing span{display:inline-block;width:6px;height:6px;margin-right:4px;border-radius:50%;background:var(--faint);animation:blink 1.2s infinite}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes blink{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+/* ---------- composer ---------- */
+.composer-area{
+  position:sticky;bottom:0;background:color-mix(in srgb,var(--bg) 92%,transparent);
+  backdrop-filter:blur(8px);border-top:1px solid var(--border);
+  padding:12px 26px calc(14px + env(safe-area-inset-bottom,0px));
+}
+.composer{max-width:780px;margin:auto;border:1px solid var(--border);border-radius:12px;display:flex;background:var(--surface);overflow:hidden}
+.composer:focus-within{border-color:var(--accent-2)}
+.composer textarea{flex:1;border:0;outline:0;resize:none;padding:13px 15px;background:transparent;max-height:120px}
+.mic,.send{border:0;cursor:pointer}
+.mic{width:48px;background:transparent;color:var(--accent);font-size:17px}
+.mic.listening{background:var(--red-soft);color:var(--red)}
+.send{padding:0 20px;background:var(--accent);color:#fff;font-weight:600}
+html[data-theme="dark"] .send{color:#0e1420}
+.footer{max-width:780px;margin:8px auto 0;font-size:11.5px;color:var(--faint);display:flex;gap:7px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--green)}
+.dot.off{background:var(--amber)}
+.powered{margin-left:auto}
+
+/* ---------- detail sheet ---------- */
+.sheet-wrap{position:fixed;inset:0;z-index:50}
+.sheet-bg{position:absolute;inset:0;background:rgba(10,16,28,.45)}
+.sheet{
+  position:absolute;top:0;right:0;height:100%;width:min(460px,100%);
+  background:var(--surface);border-left:1px solid var(--border);
+  padding:26px 24px calc(26px + env(safe-area-inset-bottom,0px));
+  overflow-y:auto;animation:slideIn .18s ease-out;
+}
+@keyframes slideIn{from{transform:translateX(18px);opacity:.6}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){.sheet{animation:none}.typing span{animation:none}}
+.sheet-close{position:absolute;top:16px;right:16px;border:1px solid var(--border);background:var(--surface-2);width:30px;height:30px;border-radius:8px;cursor:pointer;color:var(--muted)}
+.sheet h3{margin:4px 0 4px;font-size:18px;line-height:1.35;padding-right:36px}
+.sheet .eyebrow{font-size:12px;color:var(--faint);margin:0}
+.kv{margin-top:20px;border-top:1px solid var(--border-soft)}
+.kv div{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--border-soft);font-size:13.5px}
+.kv dt{width:130px;flex-shrink:0;color:var(--faint);font-size:12.5px;padding-top:1px}
+.kv dd{margin:0;flex:1;line-height:1.55}
+.note{margin-top:18px;padding:12px 14px;border-radius:10px;background:var(--surface-2);border:1px solid var(--border-soft);font-size:12.5px;color:var(--muted);line-height:1.6}
+
+/* ---------- responsive ---------- */
+.drawer-btn{display:none}
+@media(max-width:960px){
+  .sidebar{position:fixed;z-index:30;left:0;top:0;transform:translateX(-100%);transition:transform .2s;box-shadow:var(--shadow)}
+  .sidebar.open{transform:none}
+  .drawer-btn{display:grid;place-items:center;position:fixed;z-index:31;top:calc(12px + env(safe-area-inset-top,0px));left:12px;width:38px;height:38px;border-radius:9px;border:1px solid var(--border);background:var(--surface);cursor:pointer}
+  .topbar{padding-left:62px}
+  .content,.composer-area{padding-left:16px;padding-right:16px}
+  .message.user{margin-left:6%}
+  .message.answer{margin-right:0}
+}
+@media(max-width:560px){
+  .topbar{padding-top:calc(16px + env(safe-area-inset-top,0px))}
+  .lang{padding:6px 8px;font-size:12px}
+  .powered{display:none}
+  .cards{grid-template-columns:1fr;padding:14px}
+}
+
+/* ==============================
+   RAG ANSWER FORMATTING
+   ============================== */
+
+.answer-content strong {
+  font-weight: 700;
+}
+
+
+.answer-heading {
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  font-size: 1.05em;
+}
+
+
+.answer-bullet {
+  margin: 3px 0;
+  padding-left: 4px;
+}
+
+
+.answer-number {
+  margin: 3px 0;
+}
+
+
+/* ==============================
+   SOURCE CARDS
+   ============================== */
+
+.sources-title {
+  margin-top: 22px;
+  padding-top: 14px;
+
+  border-top: 1px solid
+    rgba(255,255,255,0.08);
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+
+  opacity: 0.65;
+}
+
+
+.sources-list {
+  margin-top: 10px;
+}
+
+
+.source-card {
+  padding: 11px 13px;
+  margin-bottom: 8px;
+
+  border: 1px solid
+    rgba(255,255,255,0.07);
+
+  border-radius: 10px;
+
+  background: rgba(255,255,255,0.025);
+}
+
+
+.source-label {
+  font-size: 10px;
+  font-weight: 700;
+
+  letter-spacing: 0.08em;
+
+  opacity: 0.55;
+
+  margin-bottom: 5px;
+}
+
+
+.source-document {
+  font-size: 12px;
+  line-height: 1.5;
+
+  opacity: 0.85;
+}
+
+
+.source-page {
+  margin-top: 4px;
+
+  font-size: 11px;
+
+  opacity: 0.55;
+}
+
+.sahayak-loading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.loading-symbol {
+  flex: 0 0 auto;
+  animation: sahayakPulse 1.2s ease-in-out infinite;
+}
+
+.loading-text {
+  flex: 0 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.loading-symbol {
+  flex: 0 0 auto;
+  animation: sahayakPulse 1.2s ease-in-out infinite;
+}
+
+.typing {
+  border-top: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+@keyframes sahayakPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.9);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <button class="drawer-btn" id="drawerBtn" aria-label="Menu">☰</button>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22"><path d="M12 2c3.5 4 6 7.2 6 10.4A6 6 0 0 1 6 12.4C6 9.2 8.5 6 12 2z" fill="currentColor"/></svg>
+      </div>
+      <div>
+        <h2>IP-SAKTI</h2>
+        <p data-i18n="brandSub">Sahayak · सहायक</p>
+      </div>
+    </div>
+
+    <nav class="menu" id="menu">
+      <p class="title" data-i18n="groupAI">AI Assistant</p>
+      <button class="item active" data-page="ask">
+        <span class="ico">◍</span>
+        <span><b data-i18n="navAsk">Ask Sahayak</b><small data-i18n="navAskSub">सहायक से पूछें</small></span>
+      </button>
+      <p class="title" data-i18n="groupDB">IP Databases</p>
+      <button class="item" data-page="registry">
+        <span class="ico">▤</span>
+        <span><b data-i18n="navRegistry">IP Registry</b><small data-i18n="navRegistrySub">आईपी रजिस्ट्री</small></span>
+      </button>
+      <button class="item" data-page="patents">
+        <span class="ico">⌕</span>
+        <span><b data-i18n="navPatents">Patent Search</b><small data-i18n="navPatentsSub">पेटेंट खोज</small></span>
+      </button>
+      <button class="item" data-page="cases">
+        <span class="ico">§</span>
+        <span><b data-i18n="navCases">Case Law</b><small data-i18n="navCasesSub">मामला कानून</small></span>
+      </button>
+      <p class="title" data-i18n="groupReg">Regulatory</p>
+      <button class="item" data-page="regulations">
+        <span class="ico">⬡</span>
+        <span><b data-i18n="navRegs">Regulations Library</b><small data-i18n="navRegsSub">विनियम पुस्तकालय</small></span>
+      </button>
+      <button class="item" data-page="glossary">
+        <span class="ico">A</span>
+        <span><b data-i18n="navGloss">Glossary</b><small data-i18n="navGlossSub">शब्दकोश</small></span>
+      </button>
+    </nav>
+
+    <div class="coverage">
+      <b data-i18n="coverTitle">Regime coverage</b>
+      <p><span class="pill">IN</span> <span data-i18n="coverNat">National</span> · <span class="pill">🌐</span> <span data-i18n="coverIntl">International</span></p>
+      <p class="sources">WIPO · WTO · CBD · EU · USPTO</p>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="head-text">
+        <h1 id="pageTitle">Ask Sahayak</h1>
+        <p id="pageSubtitle">Guidance with sources, in your language</p>
+      </div>
+      <div class="controls">
+        <div class="languages" id="langBar" role="group" aria-label="Language">
+          <button class="lang active" data-lang="EN">EN</button>
+          <button class="lang" data-lang="HI">हिं</button>
+          <button class="lang" data-lang="TA">தமிழ்</button>
+          <button class="lang" data-lang="ML">മല</button>
+          <button class="lang" data-lang="KN">ಕನ್ನ</button>
+        </div>
+        <button class="theme" id="themeBtn" title="Theme"><span id="themeIcon">☾</span><span id="themeText" data-i18n="themeDark">Dark</span></button>
+      </div>
+    </header>
+
+    <section class="content" id="content"></section>
+
+    <div class="composer-area" id="composerArea">
+      <div class="composer">
+        <textarea id="question" rows="1" placeholder="Ask about IP, patents, GI, regulations, traditional knowledge…"></textarea>
+        <button class="mic" id="micBtn" aria-label="Speak">🎙</button>
+        <button class="send" id="sendBtn" data-i18n="send">Send</button>
+      </div>
+      <div class="footer">
+        <span class="dot" id="dot"></span><span id="status">RAG Knowledge Base · 939 chunks indexed</span>
+        <span class="powered">TKDL · CBD · WIPO · CGPDTM · Ministry of AYUSH</span>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="sheet-wrap" id="sheetWrap" hidden>
+  <div class="sheet-bg" id="sheetBg"></div>
+  <aside class="sheet" id="sheet" role="dialog" aria-modal="true">
+    <button class="sheet-close" id="sheetClose" aria-label="Close">✕</button>
+    <div id="sheetBody"></div>
+  </aside>
+</div>
+
+<script src="script.js"></script>
+
+<script>
+/* ============================================================
+   IP-SAKTI · Sahayak — front-end logic
+   Data is local. No backend needed.
+   ============================================================ */
+
+/* ---------------- 1. DATA ---------------- */
+
+const REGISTRY = [];
+
+const PATENTS = [];
+
+const CASES = [];
+
+const REGULATIONS = [];
+
+const GLOSSARY = [];
+
+const KB = [];
+
+/* ---------------- 2. LANGUAGES ---------------- */
+
+const I18N = {
+  EN:{
+    brandSub:"Sahayak · Your IP helper", groupAI:"AI assistant", groupDB:"IP databases", groupReg:"Regulatory",
+    navAsk:"Ask Sahayak", navAskSub:"Questions answered with sources",
+    navRegistry:"IP Registry", navRegistrySub:"Patents, GIs and trademarks",
+    navPatents:"Patent Search", navPatentsSub:"Filings across offices",
+    navCases:"Case Law", navCasesSub:"Landmark judgments",
+    navRegs:"Regulations Library", navRegsSub:"Acts, rules and directives",
+    navGloss:"Glossary", navGlossSub:"Terms explained",
+    coverTitle:"Regime coverage", coverNat:"National", coverIntl:"International",
+    themeDark:"Dark", themeLight:"Light",
+    titleAsk:"Ask Sahayak", subAsk:"Answers from a local knowledge base, with the source named",
+    titleRegistry:"IP Registry", subRegistry:"Patents, geographical indications and trademarks — open a row for details",
+    titlePatents:"Patent Search", subPatents:"Ayurvedic and herbal filings across jurisdictions",
+    titleCases:"Case Law", subCases:"Landmark judgments on Ayurvedic IP, biopiracy and traditional knowledge",
+    titleRegs:"Regulations Library", subRegs:"National and international instruments governing Ayurvedic IP",
+    titleGloss:"Glossary", subGloss:"IP and regulatory terms in English and Devanagari",
+    search:"Search…", searchRegs:"Search regulations…", searchTerms:"Search terms…",
+    records:"records", instruments:"instruments", openRow:"open a row for details",
+    all:"All", patent:"Patent", gi:"GI", trademark:"Trademark", national:"National", international:"International",
+    registered:"Registered", pending:"Pending", opposed:"Opposed", granted:"Granted", published:"Published",
+    india:"India", usa:"USA", ep:"EP", pct:"PCT", patents:"Patents", biodiversity:"Biodiversity",
+    quality:"Quality standards", licensing:"Licensing", market:"Market access", manufacturing:"Manufacturing",
+    colId:"ID", colTitle:"Title / name", colType:"Type", colOwner:"Applicant / owner", colClass:"Class",
+    colFiled:"Filed", colRegime:"Regime", colStatus:"Status", colAppNo:"Application no.", colIpc:"IPC class",
+    colAssignee:"Assignee", colOffice:"Office", colCase:"Case", colForum:"Forum", colYear:"Year",
+    colTopic:"Topic", colSummary:"Summary", colTerm:"Term", colDev:"Devanagari", colDef:"Definition",
+    colSource:"Source", colRelated:"Related",
+    hello:"Hello, I am Sahayak", heroLine:"Ask about patents, geographical indications, traditional knowledge, AYUSH rules, ABS or TRIPS. Every answer names where it comes from.",
+    q1:"What is a patent?", q2:"What is a GI?", q3:"Traditional knowledge", q4:"AYUSH rules",
+    placeholder:"Ask about IP, patents, GI, regulations, traditional knowledge…", send:"Send",
+    online:"RAG Knowledge Base · 939 chunks indexed", offline:"Offline · local interface only",
+    noMatch:"Nothing matches that filter", noMatchSub:"Clear the search or pick a different filter.",
+    notFound:"I could not find this in my local knowledge base yet. Try patents, GI, AYUSH, traditional knowledge, ABS or Nagoya, WIPO, TRIPS, copyright, trademarks or biopiracy.",
+    confidence:"Prototype confidence", source:"Source", detail:"Details", about:"Notes",
+    langNote:"This answer is shown in English — the assistant's answer text is available in English and Hindi so far.",
+    disclaimer:"Educational information from a student prototype. Not legal or medical advice."
+  },
+  HI:{
+    brandSub:"सहायक · आपका आईपी मददगार", groupAI:"एआई सहायक", groupDB:"आईपी डेटाबेस", groupReg:"नियामक",
+    navAsk:"सहायक से पूछें", navAskSub:"स्रोत सहित उत्तर",
+    navRegistry:"आईपी रजिस्ट्री", navRegistrySub:"पेटेंट, जीआई और ट्रेडमार्क",
+    navPatents:"पेटेंट खोज", navPatentsSub:"विभिन्न कार्यालयों के आवेदन",
+    navCases:"मामला कानून", navCasesSub:"ऐतिहासिक निर्णय",
+    navRegs:"विनियम पुस्तकालय", navRegsSub:"अधिनियम, नियम और निर्देश",
+    navGloss:"शब्दकोश", navGlossSub:"शब्दों की व्याख्या",
+    coverTitle:"क्षेत्र कवरेज", coverNat:"राष्ट्रीय", coverIntl:"अंतरराष्ट्रीय",
+    themeDark:"डार्क", themeLight:"लाइट",
+    titleAsk:"सहायक से पूछें", subAsk:"स्थानीय ज्ञान भंडार से उत्तर, स्रोत के साथ",
+    titleRegistry:"आईपी रजिस्ट्री", subRegistry:"पेटेंट, भौगोलिक संकेत और ट्रेडमार्क — विवरण हेतु पंक्ति खोलें",
+    titlePatents:"पेटेंट खोज", subPatents:"आयुर्वेदिक और हर्बल पेटेंट आवेदन",
+    titleCases:"मामला कानून", subCases:"आयुर्वेदिक आईपी, जैव-चोरी और पारंपरिक ज्ञान पर प्रमुख निर्णय",
+    titleRegs:"विनियम पुस्तकालय", subRegs:"आयुर्वेदिक आईपी से जुड़े राष्ट्रीय व अंतरराष्ट्रीय नियम",
+    titleGloss:"शब्दकोश", subGloss:"आईपी और नियामक शब्द, अंग्रेज़ी व देवनागरी में",
+    search:"खोजें…", searchRegs:"विनियम खोजें…", searchTerms:"शब्द खोजें…",
+    records:"रिकॉर्ड", instruments:"दस्तावेज़", openRow:"विवरण हेतु पंक्ति खोलें",
+    all:"सभी", patent:"पेटेंट", gi:"जीआई", trademark:"ट्रेडमार्क", national:"राष्ट्रीय", international:"अंतरराष्ट्रीय",
+    registered:"पंजीकृत", pending:"लंबित", opposed:"विरोधित", granted:"स्वीकृत", published:"प्रकाशित",
+    india:"भारत", usa:"अमेरिका", ep:"ईपी", pct:"पीसीटी", patents:"पेटेंट", biodiversity:"जैव विविधता",
+    quality:"गुणवत्ता मानक", licensing:"लाइसेंसिंग", market:"बाज़ार पहुँच", manufacturing:"विनिर्माण",
+    colId:"आईडी", colTitle:"शीर्षक / नाम", colType:"प्रकार", colOwner:"आवेदक / स्वामी", colClass:"वर्ग",
+    colFiled:"दाखिल", colRegime:"क्षेत्र", colStatus:"स्थिति", colAppNo:"आवेदन संख्या", colIpc:"आईपीसी वर्ग",
+    colAssignee:"समनुदेशिती", colOffice:"कार्यालय", colCase:"मामला", colForum:"न्यायालय", colYear:"वर्ष",
+    colTopic:"विषय", colSummary:"सारांश", colTerm:"शब्द", colDev:"देवनागरी", colDef:"परिभाषा",
+    colSource:"स्रोत", colRelated:"संबंधित",
+    hello:"नमस्ते, मैं सहायक हूँ", heroLine:"पेटेंट, भौगोलिक संकेत, पारंपरिक ज्ञान, आयुष नियम, एबीएस या ट्रिप्स के बारे में पूछें। हर उत्तर के साथ स्रोत दिया जाता है।",
+    q1:"पेटेंट क्या है?", q2:"जीआई क्या है?", q3:"पारंपरिक ज्ञान", q4:"आयुष नियम",
+    placeholder:"आईपी, पेटेंट, जीआई, नियम या पारंपरिक ज्ञान के बारे में पूछें…", send:"भेजें",
+    online:"स्थानीय ज्ञान भंडार तैयार", offline:"ऑफ़लाइन · स्थानीय ज्ञान भंडार फिर भी काम करता है",
+    noMatch:"इस फ़िल्टर से कुछ नहीं मिला", noMatchSub:"खोज हटाएँ या दूसरा फ़िल्टर चुनें।",
+    notFound:"यह मेरे स्थानीय ज्ञान भंडार में अभी नहीं है। पेटेंट, जीआई, आयुष, पारंपरिक ज्ञान, एबीएस/नागोया, डब्ल्यूआईपीओ, ट्रिप्स, कॉपीराइट, ट्रेडमार्क या जैव-चोरी पूछकर देखें।",
+    confidence:"प्रोटोटाइप विश्वास", source:"स्रोत", detail:"विवरण", about:"टिप्पणी",
+    langNote:"", disclaimer:"यह छात्र प्रोटोटाइप की शैक्षिक जानकारी है। यह कानूनी या चिकित्सकीय सलाह नहीं है।"
+  },
+  TA:{
+    brandSub:"சகாயக் · உங்கள் ஐபி உதவியாளர்", groupAI:"ஏஐ உதவியாளர்", groupDB:"ஐபி தரவுத்தளங்கள்", groupReg:"ஒழுங்குமுறை",
+    navAsk:"சகாயக்கிடம் கேளுங்கள்", navAskSub:"ஆதாரத்துடன் பதில்",
+    navRegistry:"ஐபி பதிவேடு", navRegistrySub:"காப்புரிமை, ஜிஐ, வர்த்தக முத்திரை",
+    navPatents:"காப்புரிமை தேடல்", navPatentsSub:"பல்வேறு அலுவலக விண்ணப்பங்கள்",
+    navCases:"வழக்கு சட்டம்", navCasesSub:"முக்கியத் தீர்ப்புகள்",
+    navRegs:"ஒழுங்குமுறை நூலகம்", navRegsSub:"சட்டங்கள் மற்றும் விதிகள்",
+    navGloss:"சொற்களஞ்சியம்", navGlossSub:"சொற்களின் விளக்கம்",
+    coverTitle:"பரப்பு", coverNat:"தேசிய", coverIntl:"சர்வதேச",
+    themeDark:"இருள்", themeLight:"ஒளி",
+    titleAsk:"சகாயக்கிடம் கேளுங்கள்", subAsk:"உள்ளூர் அறிவுத் தளத்திலிருந்து ஆதாரத்துடன் பதில்",
+    titleRegistry:"ஐபி பதிவேடு", subRegistry:"காப்புரிமை, புவிசார் குறியீடு மற்றும் வர்த்தக முத்திரை — விவரங்களுக்கு வரிசையைத் திறக்கவும்",
+    titlePatents:"காப்புரிமை தேடல்", subPatents:"ஆயுர்வேத மற்றும் மூலிகை காப்புரிமை விண்ணப்பங்கள்",
+    titleCases:"வழக்கு சட்டம்", subCases:"ஆயுர்வேத ஐபி மற்றும் பாரம்பரிய அறிவு தொடர்பான தீர்ப்புகள்",
+    titleRegs:"ஒழுங்குமுறை நூலகம்", subRegs:"ஆயுர்வேத ஐபியை நிர்வகிக்கும் தேசிய மற்றும் சர்வதேச விதிகள்",
+    titleGloss:"சொற்களஞ்சியம்", subGloss:"ஐபி மற்றும் ஒழுங்குமுறைச் சொற்கள்",
+    search:"தேடு…", searchRegs:"விதிகளைத் தேடு…", searchTerms:"சொற்களைத் தேடு…",
+    records:"பதிவுகள்", instruments:"ஆவணங்கள்", openRow:"விவரங்களுக்கு வரிசையைத் திறக்கவும்",
+    all:"அனைத்தும்", patent:"காப்புரிமை", gi:"ஜிஐ", trademark:"வர்த்தக முத்திரை", national:"தேசிய", international:"சர்வதேச",
+    registered:"பதிவு", pending:"நிலுவை", opposed:"எதிர்ப்பு", granted:"வழங்கப்பட்டது", published:"வெளியிடப்பட்டது",
+    india:"இந்தியா", usa:"அமெரிக்கா", ep:"ஈபி", pct:"பிசிடி", patents:"காப்புரிமை", biodiversity:"பல்லுயிர்",
+    quality:"தர நிர்ணயம்", licensing:"உரிமம்", market:"சந்தை அணுகல்", manufacturing:"உற்பத்தி",
+    colId:"அடையாளம்", colTitle:"தலைப்பு / பெயர்", colType:"வகை", colOwner:"விண்ணப்பதாரர்", colClass:"வகுப்பு",
+    colFiled:"தாக்கல்", colRegime:"பரப்பு", colStatus:"நிலை", colAppNo:"விண்ணப்ப எண்", colIpc:"ஐபிசி வகுப்பு",
+    colAssignee:"உரிமையாளர்", colOffice:"அலுவலகம்", colCase:"வழக்கு", colForum:"நீதிமன்றம்", colYear:"ஆண்டு",
+    colTopic:"தலைப்பு", colSummary:"சுருக்கம்", colTerm:"சொல்", colDev:"தேவநாகரி", colDef:"விளக்கம்",
+    colSource:"ஆதாரம்", colRelated:"தொடர்புடையவை",
+    hello:"வணக்கம், நான் சகாயக்", heroLine:"காப்புரிமை, புவிசார் குறியீடு, பாரம்பரிய அறிவு, ஆயுஷ் விதிகள் குறித்துக் கேளுங்கள். ஒவ்வொரு பதிலிலும் ஆதாரம் குறிப்பிடப்படும்.",
+    q1:"காப்புரிமை என்றால் என்ன?", q2:"ஜிஐ என்றால் என்ன?", q3:"பாரம்பரிய அறிவு", q4:"ஆயுஷ் விதிகள்",
+    placeholder:"ஐபி, காப்புரிமை, ஜிஐ, விதிகள் குறித்துக் கேளுங்கள்…", send:"அனுப்பு",
+    online:"உள்ளூர் அறிவுத் தளம் தயார்", offline:"இணையம் இல்லை · உள்ளூர் தளம் இயங்கும்",
+    noMatch:"இந்த வடிகட்டிக்கு எதுவும் இல்லை", noMatchSub:"தேடலை அழிக்கவும் அல்லது வேறு வடிகட்டியைத் தேர்வு செய்யவும்.",
+    notFound:"இது இன்னும் எனது உள்ளூர் அறிவுத் தளத்தில் இல்லை. காப்புரிமை, ஜிஐ, ஆயுஷ், பாரம்பரிய அறிவு, ஏபிஎஸ், டிரிப்ஸ் ஆகியவற்றைக் கேட்டுப் பாருங்கள்.",
+    confidence:"முன்மாதிரி நம்பிக்கை", source:"ஆதாரம்", detail:"விவரம்", about:"குறிப்பு",
+    langNote:"இந்தப் பதில் ஆங்கிலத்தில் காட்டப்படுகிறது — பதில் உரை தற்போது ஆங்கிலம் மற்றும் இந்தியில் மட்டுமே உள்ளது.",
+    disclaimer:"மாணவர் முன்மாதிரியின் கல்வித் தகவல். சட்ட அல்லது மருத்துவ ஆலோசனை அல்ல."
+  },
+  ML:{
+    brandSub:"സഹായക് · നിങ്ങളുടെ ഐപി സഹായി", groupAI:"എഐ സഹായി", groupDB:"ഐപി ഡാറ്റാബേസുകൾ", groupReg:"നിയന്ത്രണം",
+    navAsk:"സഹായകിനോട് ചോദിക്കൂ", navAskSub:"ഉറവിടത്തോടെ ഉത്തരം",
+    navRegistry:"ഐപി രജിസ്ട്രി", navRegistrySub:"പേറ്റന്റ്, ജിഐ, ട്രേഡ്മാർക്ക്",
+    navPatents:"പേറ്റന്റ് തിരയൽ", navPatentsSub:"വിവിധ ഓഫീസുകളിലെ അപേക്ഷകൾ",
+    navCases:"കേസ് നിയമം", navCasesSub:"സുപ്രധാന വിധികൾ",
+    navRegs:"നിയന്ത്രണ ലൈബ്രറി", navRegsSub:"നിയമങ്ങളും ചട്ടങ്ങളും",
+    navGloss:"പദാവലി", navGlossSub:"പദങ്ങളുടെ വിശദീകരണം",
+    coverTitle:"പരിധി", coverNat:"ദേശീയം", coverIntl:"അന്താരാഷ്ട്രം",
+    themeDark:"ഇരുണ്ടത്", themeLight:"വെളുത്തത്",
+    titleAsk:"സഹായകിനോട് ചോദിക്കൂ", subAsk:"പ്രാദേശിക വിജ്ഞാനശേഖരത്തിൽ നിന്ന് ഉറവിടത്തോടെ ഉത്തരം",
+    titleRegistry:"ഐപി രജിസ്ട്രി", subRegistry:"പേറ്റന്റ്, ഭൗമസൂചിക, ട്രേഡ്മാർക്ക് — വിശദാംശങ്ങൾക്ക് വരി തുറക്കുക",
+    titlePatents:"പേറ്റന്റ് തിരയൽ", subPatents:"ആയുർവേദ, ഹെർബൽ പേറ്റന്റ് അപേക്ഷകൾ",
+    titleCases:"കേസ് നിയമം", subCases:"ആയുർവേദ ഐപി, ജൈവകൊള്ള, പാരമ്പര്യ അറിവ് സംബന്ധിച്ച വിധികൾ",
+    titleRegs:"നിയന്ത്രണ ലൈബ്രറി", subRegs:"ആയുർവേദ ഐപി നിയന്ത്രിക്കുന്ന ദേശീയ, അന്താരാഷ്ട്ര രേഖകൾ",
+    titleGloss:"പദാവലി", subGloss:"ഐപി, നിയന്ത്രണ പദങ്ങൾ",
+    search:"തിരയുക…", searchRegs:"നിയമങ്ങൾ തിരയുക…", searchTerms:"പദങ്ങൾ തിരയുക…",
+    records:"രേഖകൾ", instruments:"രേഖകൾ", openRow:"വിശദാംശങ്ങൾക്ക് വരി തുറക്കുക",
+    all:"എല്ലാം", patent:"പേറ്റന്റ്", gi:"ജിഐ", trademark:"ട്രേഡ്മാർക്ക്", national:"ദേശീയം", international:"അന്താരാഷ്ട്രം",
+    registered:"രജിസ്റ്റർ ചെയ്തു", pending:"തീർപ്പാകാത്തത്", opposed:"എതിർപ്പ്", granted:"അനുവദിച്ചു", published:"പ്രസിദ്ധീകരിച്ചു",
+    india:"ഇന്ത്യ", usa:"യുഎസ്എ", ep:"ഇപി", pct:"പിസിടി", patents:"പേറ്റന്റ്", biodiversity:"ജൈവവൈവിധ്യം",
+    quality:"ഗുണനിലവാരം", licensing:"ലൈസൻസിംഗ്", market:"വിപണി പ്രവേശനം", manufacturing:"നിർമ്മാണം",
+    colId:"ഐഡി", colTitle:"തലക്കെട്ട് / പേര്", colType:"തരം", colOwner:"അപേക്ഷകൻ", colClass:"ക്ലാസ്",
+    colFiled:"ഫയൽ ചെയ്തത്", colRegime:"പരിധി", colStatus:"നില", colAppNo:"അപേക്ഷാ നമ്പർ", colIpc:"ഐപിസി ക്ലാസ്",
+    colAssignee:"ഉടമ", colOffice:"ഓഫീസ്", colCase:"കേസ്", colForum:"കോടതി", colYear:"വർഷം",
+    colTopic:"വിഷയം", colSummary:"സംഗ്രഹം", colTerm:"പദം", colDev:"ദേവനാഗരി", colDef:"നിർവചനം",
+    colSource:"ഉറവിടം", colRelated:"ബന്ധപ്പെട്ടവ",
+    hello:"നമസ്കാരം, ഞാൻ സഹായക്", heroLine:"പേറ്റന്റ്, ഭൗമസൂചിക, പാരമ്പര്യ അറിവ്, ആയുഷ് നിയമങ്ങൾ എന്നിവയെക്കുറിച്ച് ചോദിക്കൂ. ഓരോ ഉത്തരത്തിലും ഉറവിടം നൽകും.",
+    q1:"പേറ്റന്റ് എന്താണ്?", q2:"ജിഐ എന്താണ്?", q3:"പാരമ്പര്യ അറിവ്", q4:"ആയുഷ് നിയമങ്ങൾ",
+    placeholder:"ഐപി, പേറ്റന്റ്, ജിഐ, നിയമങ്ങൾ എന്നിവയെക്കുറിച്ച് ചോദിക്കൂ…", send:"അയയ്ക്കുക",
+    online:"പ്രാദേശിക വിജ്ഞാനശേഖരം തയ്യാർ", offline:"ഓഫ്‌ലൈൻ · പ്രാദേശിക ശേഖരം പ്രവർത്തിക്കും",
+    noMatch:"ഈ ഫിൽട്ടറിൽ ഒന്നുമില്ല", noMatchSub:"തിരച്ചിൽ മായ്ക്കുക അല്ലെങ്കിൽ മറ്റൊരു ഫിൽട്ടർ തിരഞ്ഞെടുക്കുക.",
+    notFound:"ഇത് എന്റെ പ്രാദേശിക ശേഖരത്തിൽ ഇതുവരെ ഇല്ല. പേറ്റന്റ്, ജിഐ, ആയുഷ്, പാരമ്പര്യ അറിവ്, എബിഎസ്, ട്രിപ്സ് എന്നിവ ചോദിച്ചു നോക്കൂ.",
+    confidence:"പ്രോട്ടോടൈപ്പ് ആത്മവിശ്വാസം", source:"ഉറവിടം", detail:"വിശദാംശം", about:"കുറിപ്പ്",
+    langNote:"ഈ ഉത്തരം ഇംഗ്ലീഷിലാണ് — ഉത്തരങ്ങൾ ഇപ്പോൾ ഇംഗ്ലീഷിലും ഹിന്ദിയിലും മാത്രമാണ് ലഭ്യം.",
+    disclaimer:"വിദ്യാർത്ഥി പ്രോട്ടോടൈപ്പിലെ വിദ്യാഭ്യാസ വിവരം. നിയമ അല്ലെങ്കിൽ വൈദ്യ ഉപദേശമല്ല."
+  },
+  KN:{
+    brandSub:"ಸಹಾಯಕ · ನಿಮ್ಮ ಐಪಿ ಸಹಾಯಕ", groupAI:"ಎಐ ಸಹಾಯಕ", groupDB:"ಐಪಿ ದತ್ತಸಂಚಯ", groupReg:"ನಿಯಂತ್ರಣ",
+    navAsk:"ಸಹಾಯಕರನ್ನು ಕೇಳಿ", navAskSub:"ಮೂಲದೊಂದಿಗೆ ಉತ್ತರ",
+    navRegistry:"ಐಪಿ ನೋಂದಣಿ", navRegistrySub:"ಪೇಟೆಂಟ್, ಜಿಐ, ಟ್ರೇಡ್‌ಮಾರ್ಕ್",
+    navPatents:"ಪೇಟೆಂಟ್ ಹುಡುಕಾಟ", navPatentsSub:"ವಿವಿಧ ಕಚೇರಿಗಳ ಅರ್ಜಿಗಳು",
+    navCases:"ಪ್ರಕರಣ ಕಾನೂನು", navCasesSub:"ಪ್ರಮುಖ ತೀರ್ಪುಗಳು",
+    navRegs:"ನಿಯಮ ಗ್ರಂಥಾಲಯ", navRegsSub:"ಕಾಯ್ದೆಗಳು ಮತ್ತು ನಿಯಮಗಳು",
+    navGloss:"ಪದಕೋಶ", navGlossSub:"ಪದಗಳ ವಿವರಣೆ",
+    coverTitle:"ವ್ಯಾಪ್ತಿ", coverNat:"ರಾಷ್ಟ್ರೀಯ", coverIntl:"ಅಂತಾರಾಷ್ಟ್ರೀಯ",
+    themeDark:"ಗಾಢ", themeLight:"ತಿಳಿ",
+    titleAsk:"ಸಹಾಯಕರನ್ನು ಕೇಳಿ", subAsk:"ಸ್ಥಳೀಯ ಜ್ಞಾನ ಸಂಗ್ರಹದಿಂದ ಮೂಲ ಸಹಿತ ಉತ್ತರ",
+    titleRegistry:"ಐಪಿ ನೋಂದಣಿ", subRegistry:"ಪೇಟೆಂಟ್, ಭೌಗೋಳಿಕ ಸೂಚಕ ಮತ್ತು ಟ್ರೇಡ್‌ಮಾರ್ಕ್ — ವಿವರಗಳಿಗೆ ಸಾಲನ್ನು ತೆರೆಯಿರಿ",
+    titlePatents:"ಪೇಟೆಂಟ್ ಹುಡುಕಾಟ", subPatents:"ಆಯುರ್ವೇದ ಮತ್ತು ಗಿಡಮೂಲಿಕೆ ಪೇಟೆಂಟ್ ಅರ್ಜಿಗಳು",
+    titleCases:"ಪ್ರಕರಣ ಕಾನೂನು", subCases:"ಆಯುರ್ವೇದ ಐಪಿ, ಜೈವಿಕ ಕಳ್ಳತನ ಮತ್ತು ಸಾಂಪ್ರದಾಯಿಕ ಜ್ಞಾನದ ತೀರ್ಪುಗಳು",
+    titleRegs:"ನಿಯಮ ಗ್ರಂಥಾಲಯ", subRegs:"ಆಯುರ್ವೇದ ಐಪಿಯನ್ನು ನಿಯಂತ್ರಿಸುವ ರಾಷ್ಟ್ರೀಯ ಮತ್ತು ಅಂತಾರಾಷ್ಟ್ರೀಯ ದಾಖಲೆಗಳು",
+    titleGloss:"ಪದಕೋಶ", subGloss:"ಐಪಿ ಮತ್ತು ನಿಯಂತ್ರಣ ಪದಗಳು",
+    search:"ಹುಡುಕಿ…", searchRegs:"ನಿಯಮಗಳನ್ನು ಹುಡುಕಿ…", searchTerms:"ಪದಗಳನ್ನು ಹುಡುಕಿ…",
+    records:"ದಾಖಲೆಗಳು", instruments:"ದಾಖಲೆಗಳು", openRow:"ವಿವರಗಳಿಗೆ ಸಾಲನ್ನು ತೆರೆಯಿರಿ",
+    all:"ಎಲ್ಲಾ", patent:"ಪೇಟೆಂಟ್", gi:"ಜಿಐ", trademark:"ಟ್ರೇಡ್‌ಮಾರ್ಕ್", national:"ರಾಷ್ಟ್ರೀಯ", international:"ಅಂತಾರಾಷ್ಟ್ರೀಯ",
+    registered:"ನೋಂದಾಯಿತ", pending:"ಬಾಕಿ", opposed:"ವಿರೋಧ", granted:"ಮಂಜೂರು", published:"ಪ್ರಕಟಿತ",
+    india:"ಭಾರತ", usa:"ಅಮೆರಿಕ", ep:"ಇಪಿ", pct:"ಪಿಸಿಟಿ", patents:"ಪೇಟೆಂಟ್", biodiversity:"ಜೀವವೈವಿಧ್ಯ",
+    quality:"ಗುಣಮಟ್ಟ", licensing:"ಪರವಾನಗಿ", market:"ಮಾರುಕಟ್ಟೆ ಪ್ರವೇಶ", manufacturing:"ಉತ್ಪಾದನೆ",
+    colId:"ಐಡಿ", colTitle:"ಶೀರ್ಷಿಕೆ / ಹೆಸರು", colType:"ಬಗೆ", colOwner:"ಅರ್ಜಿದಾರ", colClass:"ವರ್ಗ",
+    colFiled:"ಸಲ್ಲಿಕೆ", colRegime:"ವ್ಯಾಪ್ತಿ", colStatus:"ಸ್ಥಿತಿ", colAppNo:"ಅರ್ಜಿ ಸಂಖ್ಯೆ", colIpc:"ಐಪಿಸಿ ವರ್ಗ",
+    colAssignee:"ಮಾಲೀಕ", colOffice:"ಕಚೇರಿ", colCase:"ಪ್ರಕರಣ", colForum:"ನ್ಯಾಯಾಲಯ", colYear:"ವರ್ಷ",
+    colTopic:"ವಿಷಯ", colSummary:"ಸಾರಾಂಶ", colTerm:"ಪದ", colDev:"ದೇವನಾಗರಿ", colDef:"ವ್ಯಾಖ್ಯಾನ",
+    colSource:"ಮೂಲ", colRelated:"ಸಂಬಂಧಿತ",
+    hello:"ನಮಸ್ಕಾರ, ನಾನು ಸಹಾಯಕ", heroLine:"ಪೇಟೆಂಟ್, ಭೌಗೋಳಿಕ ಸೂಚಕ, ಸಾಂಪ್ರದಾಯಿಕ ಜ್ಞಾನ, ಆಯುಷ್ ನಿಯಮಗಳ ಬಗ್ಗೆ ಕೇಳಿ. ಪ್ರತಿ ಉತ್ತರದಲ್ಲಿ ಮೂಲವನ್ನು ನೀಡಲಾಗುತ್ತದೆ.",
+    q1:"ಪೇಟೆಂಟ್ ಎಂದರೇನು?", q2:"ಜಿಐ ಎಂದರೇನು?", q3:"ಸಾಂಪ್ರದಾಯಿಕ ಜ್ಞಾನ", q4:"ಆಯುಷ್ ನಿಯಮಗಳು",
+    placeholder:"ಐಪಿ, ಪೇಟೆಂಟ್, ಜಿಐ, ನಿಯಮಗಳ ಬಗ್ಗೆ ಕೇಳಿ…", send:"ಕಳುಹಿಸಿ",
+    online:"ಸ್ಥಳೀಯ ಜ್ಞಾನ ಸಂಗ್ರಹ ಸಿದ್ಧ", offline:"ಆಫ್‌ಲೈನ್ · ಸ್ಥಳೀಯ ಸಂಗ್ರಹ ಕೆಲಸ ಮಾಡುತ್ತದೆ",
+    noMatch:"ಈ ಫಿಲ್ಟರ್‌ಗೆ ಏನೂ ಸಿಗಲಿಲ್ಲ", noMatchSub:"ಹುಡುಕಾಟವನ್ನು ಅಳಿಸಿ ಅಥವಾ ಬೇರೆ ಫಿಲ್ಟರ್ ಆರಿಸಿ.",
+    notFound:"ಇದು ನನ್ನ ಸ್ಥಳೀಯ ಸಂಗ್ರಹದಲ್ಲಿ ಇನ್ನೂ ಇಲ್ಲ. ಪೇಟೆಂಟ್, ಜಿಐ, ಆಯುಷ್, ಸಾಂಪ್ರದಾಯಿಕ ಜ್ಞಾನ, ಎಬಿಎಸ್, ಟ್ರಿಪ್ಸ್ ಕೇಳಿ ನೋಡಿ.",
+    confidence:"ಮೂಲಮಾದರಿ ವಿಶ್ವಾಸ", source:"ಮೂಲ", detail:"ವಿವರ", about:"ಟಿಪ್ಪಣಿ",
+    langNote:"ಈ ಉತ್ತರ ಇಂಗ್ಲಿಷ್‌ನಲ್ಲಿದೆ — ಉತ್ತರಗಳು ಸದ್ಯಕ್ಕೆ ಇಂಗ್ಲಿಷ್ ಮತ್ತು ಹಿಂದಿಯಲ್ಲಿ ಮಾತ್ರ ಲಭ್ಯ.",
+    disclaimer:"ವಿದ್ಯಾರ್ಥಿ ಮೂಲಮಾದರಿಯ ಶೈಕ್ಷಣಿಕ ಮಾಹಿತಿ. ಕಾನೂನು ಅಥವಾ ವೈದ್ಯಕೀಯ ಸಲಹೆ ಅಲ್ಲ."
+  }
+};
+
+/* ---------------- 3. STATE ---------------- */
+
+const state = {lang:"EN", page:"ask", filter:"all", query:"", chat:[]};
+const t = k => (I18N[state.lang] && I18N[state.lang][k]) || I18N.EN[k] || k;
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+/* ---------------- 4. THEME ---------------- */
+
+function applyTheme(mode){
+  document.documentElement.setAttribute("data-theme", mode);
+  $("#themeIcon").textContent = mode === "dark" ? "☀" : "☾";
+  $("#themeText").textContent = mode === "dark" ? t("themeLight") : t("themeDark");
+  try{ localStorage.setItem("ipsakti-theme", mode); }catch(e){}
+}
+function initTheme(){
+  let saved = null;
+  try{ saved = localStorage.getItem("ipsakti-theme"); }catch(e){}
+  if(!saved) saved = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  applyTheme(saved);
+}
+$("#themeBtn").addEventListener("click", () => {
+  applyTheme(document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark");
+});
+
+/* ---------------- 5. LANGUAGE ---------------- */
+
+function applyLanguage(){
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const v = t(el.getAttribute("data-i18n"));
+    if(v) el.textContent = v;
+  });
+  $("#question").placeholder = t("placeholder");
+  $("#themeText").textContent = document.documentElement.getAttribute("data-theme") === "dark" ? t("themeLight") : t("themeDark");
+  document.documentElement.lang = {EN:"en",HI:"hi",TA:"ta",ML:"ml",KN:"kn"}[state.lang];
+  updateStatus();
+  render();
+}
+$("#langBar").addEventListener("click", e => {
+  const b = e.target.closest(".lang"); if(!b) return;
+  state.lang = b.dataset.lang;
+  document.querySelectorAll(".lang").forEach(x => x.classList.toggle("active", x === b));
+  applyLanguage();
+});
+
+/* ---------------- 6. NAVIGATION ---------------- */
+
+const PAGES = {
+  ask:{title:"titleAsk", sub:"subAsk"},
+  registry:{title:"titleRegistry", sub:"subRegistry"},
+  patents:{title:"titlePatents", sub:"subPatents"},
+  cases:{title:"titleCases", sub:"subCases"},
+  regulations:{title:"titleRegs", sub:"subRegs"},
+  glossary:{title:"titleGloss", sub:"subGloss"}
+};
+
+$("#menu").addEventListener("click", e => {
+  const b = e.target.closest(".item"); if(!b) return;
+  state.page = b.dataset.page;
+  state.filter = "all";
+  state.query = "";
+  document.querySelectorAll(".item").forEach(x => x.classList.toggle("active", x === b));
+  $("#sidebar").classList.remove("open");
+  render();
+});
+
+$("#drawerBtn").addEventListener("click", () => $("#sidebar").classList.toggle("open"));
+
+/* ---------------- 7. RENDER ---------------- */
+
+function render(){
+  $("#pageTitle").textContent = t(PAGES[state.page].title);
+  $("#pageSubtitle").textContent = t(PAGES[state.page].sub);
+  const onAsk = state.page === "ask";
+  $("#composerArea").hidden = !onAsk;
+  $("#content").classList.toggle("with-composer", false);
+  const c = $("#content");
+  if(onAsk) renderAsk(c);
+  else if(state.page === "registry") renderRegistry(c);
+  else if(state.page === "patents") renderPatents(c);
+  else if(state.page === "cases") renderCases(c);
+  else if(state.page === "regulations") renderRegulations(c);
+  else renderGlossary(c);
+}
+
+function badge(status){
+  const map = {
+    "Granted":"b-green","Registered":"b-green","Published":"b-blue","Pending":"b-amber",
+    "Under Examination":"b-blue","Opposed":"b-red","Revoked":"b-red","International Phase":"b-violet"
+  };
+  const label = {
+    "Granted":t("granted"),"Registered":t("registered"),"Published":t("published"),
+    "Pending":t("pending"),"Opposed":t("opposed")
+  }[status] || status;
+  return `<span class="badge ${map[status]||"b-plain"}">${esc(label)}</span>`;
+}
+
+function toolbar(chips, placeholderKey){
+  return `<div class="toolbar">
+    <input class="search" id="searchBox" placeholder="${esc(t(placeholderKey))}" value="${esc(state.query)}">
+    <div class="chips" id="chipBar">${chips.map(c =>
+      `<button class="chip ${state.filter===c.k?"active":""}" data-k="${c.k}">${esc(t(c.l))}</button>`).join("")}</div>
+  </div>`;
+}
+
+function wireToolbar(){
+  const s = $("#searchBox");
+  if(s) s.addEventListener("input", e => {
+    state.query = e.target.value;
+    render();
+    const n = $("#searchBox"); n.focus(); n.setSelectionRange(n.value.length, n.value.length);
+  });
+  const cb = $("#chipBar");
+  if(cb) cb.addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if(!b) return;
+    state.filter = b.dataset.k; render();
+  });
+}
+
+function matches(obj){
+  if(!state.query.trim()) return true;
+  return JSON.stringify(obj).toLowerCase().includes(state.query.toLowerCase());
+}
+
+function emptyRow(cols){
+  return `<tr><td colspan="${cols}"><div class="empty"><b>${esc(t("noMatch"))}</b>${esc(t("noMatchSub"))}</div></td></tr>`;
+}
+
+/* --- IP Registry --- */
+function renderRegistry(c){
+  const chips = [{k:"all",l:"all"},{k:"Patent",l:"patent"},{k:"GI",l:"gi"},{k:"Trademark",l:"trademark"},
+    {k:"National",l:"national"},{k:"International",l:"international"},
+    {k:"Registered",l:"registered"},{k:"Pending",l:"pending"},{k:"Opposed",l:"opposed"}];
+  const rows = REGISTRY.filter(r =>
+    matches(r) && (state.filter==="all" || r.type===state.filter || r.regime===state.filter || r.status===state.filter));
+  c.innerHTML = `<div class="panel">${toolbar(chips,"search")}
+  <div class="table-scroll"><table><thead><tr>
+    <th>${t("colId")}</th><th>${t("colTitle")}</th><th>${t("colType")}</th><th>${t("colOwner")}</th>
+    <th>${t("colClass")}</th><th>${t("colFiled")}</th><th>${t("colRegime")}</th><th>${t("colStatus")}</th>
+  </tr></thead><tbody>${rows.length ? rows.map((r,i) => `<tr data-i="${REGISTRY.indexOf(r)}">
+    <td class="mono">${esc(r.id)}</td><td class="strong">${esc(r.title)}</td><td>${esc(r.type)}</td>
+    <td class="dim">${esc(r.owner)}</td><td class="dim">${esc(r.cls)}</td><td class="mono">${esc(r.filed)}</td>
+    <td class="dim">${esc(r.regime)}</td><td>${badge(r.status)}</td></tr>`).join("") : emptyRow(8)}
+  </tbody></table></div></div>`;
+  wireToolbar();
+  c.querySelectorAll("tbody tr[data-i]").forEach(tr => tr.onclick = () => {
+    const r = REGISTRY[tr.dataset.i];
+    openSheet(r.title, r.id, [[t("colType"),r.type],[t("colStatus"),badge(r.status)],[t("colOwner"),r.owner],
+      [t("colClass"),r.cls],[t("colFiled"),r.filed],[t("colRegime"),r.regime]], r.note);
+  });
+}
+
+/* --- Patent Search --- */
+function renderPatents(c){
+  const chips = [{k:"all",l:"all"},{k:"India",l:"india"},{k:"USA",l:"usa"},{k:"EP",l:"ep"},{k:"PCT",l:"pct"},
+    {k:"Granted",l:"granted"},{k:"Pending",l:"pending"},{k:"Published",l:"published"}];
+  const rows = PATENTS.filter(r => matches(r) && (state.filter==="all" || r.office===state.filter || r.status===state.filter));
+  c.innerHTML = `<div class="panel">${toolbar(chips,"search")}
+  <div class="table-scroll"><table><thead><tr>
+    <th>${t("colAppNo")}</th><th>${t("colTitle")}</th><th>${t("colIpc")}</th><th>${t("colAssignee")}</th>
+    <th>${t("colOffice")}</th><th>${t("colFiled")}</th><th>${t("colStatus")}</th>
+  </tr></thead><tbody>${rows.length ? rows.map(r => `<tr data-i="${PATENTS.indexOf(r)}">
+    <td class="mono">${esc(r.no)}</td><td class="strong">${esc(r.title)}</td><td class="mono">${esc(r.ipc)}</td>
+    <td class="dim">${esc(r.assignee)}</td><td class="dim">${esc(r.office)}</td><td class="mono">${esc(r.filed)}</td>
+    <td>${badge(r.status)}</td></tr>`).join("") : emptyRow(7)}
+  </tbody></table></div></div>`;
+  wireToolbar();
+  c.querySelectorAll("tbody tr[data-i]").forEach(tr => tr.onclick = () => {
+    const r = PATENTS[tr.dataset.i];
+    openSheet(r.title, r.no, [[t("colStatus"),badge(r.status)],[t("colIpc"),r.ipc],[t("colAssignee"),r.assignee],
+      [t("colOffice"),r.office],[t("colFiled"),r.filed]], r.note);
+  });
+}
+
+/* --- Case Law --- */
+function renderCases(c){
+  const chips = [{k:"all",l:"all"},{k:"National",l:"national"},{k:"International",l:"international"}];
+  const rows = CASES.filter(r => matches(r) && (state.filter==="all" || r.regime===state.filter));
+  c.innerHTML = `<div class="panel">${toolbar(chips,"search")}
+  <div class="table-scroll"><table><thead><tr>
+    <th>${t("colCase")}</th><th>${t("colForum")}</th><th>${t("colYear")}</th><th>${t("colTopic")}</th>
+    <th>${t("colSummary")}</th><th>${t("colRegime")}</th>
+  </tr></thead><tbody>${rows.length ? rows.map(r => `<tr data-i="${CASES.indexOf(r)}">
+    <td class="strong">${esc(r.name)}</td><td class="dim">${esc(r.forum)}</td><td class="mono">${esc(r.year)}</td>
+    <td>${esc(r.topic)}</td><td class="dim">${esc(r.summary)}</td><td class="dim nowrap">${esc(r.regime)}</td>
+  </tr>`).join("") : emptyRow(6)}
+  </tbody></table></div></div>`;
+  wireToolbar();
+  c.querySelectorAll("tbody tr[data-i]").forEach(tr => tr.onclick = () => {
+    const r = CASES[tr.dataset.i];
+    openSheet(r.name, r.forum + " · " + r.year,
+      [[t("colTopic"),r.topic],[t("colRegime"),r.regime],[t("colSummary"),r.summary]], r.note);
+  });
+}
+
+/* --- Regulations --- */
+function renderRegulations(c){
+  const chips = [{k:"all",l:"all"},{k:"National",l:"national"},{k:"International",l:"international"},
+    {k:"Patents",l:"patents"},{k:"Biodiversity",l:"biodiversity"},{k:"Quality Standards",l:"quality"},
+    {k:"Licensing",l:"licensing"},{k:"Market Access",l:"market"},{k:"Manufacturing",l:"manufacturing"}];
+  const rows = REGULATIONS.filter(r => matches(r) && (state.filter==="all" || r.regime===state.filter || r.cat===state.filter));
+  c.innerHTML = `<div class="panel">${toolbar(chips,"searchRegs")}
+  ${rows.length ? `<div class="cards">${rows.map(r => `<article class="card" data-i="${REGULATIONS.indexOf(r)}">
+    <div class="card-top"><h3>${esc(r.title)}</h3>
+      <span class="badge ${r.regime==="National"?"b-blue":"b-green"}">${r.regime==="National"?"IN":"🌐"}</span></div>
+    <p>${esc(r.desc)}</p>
+    <div class="card-tags"><span class="badge b-plain">${esc(t(({Patents:"patents",Biodiversity:"biodiversity","Quality Standards":"quality",Licensing:"licensing","Market Access":"market",Manufacturing:"manufacturing"})[r.cat]||"all"))}</span></div>
+  </article>`).join("")}</div>` : `<div class="empty"><b>${esc(t("noMatch"))}</b>${esc(t("noMatchSub"))}</div>`}
+  </div>`;
+  wireToolbar();
+  c.querySelectorAll(".card").forEach(el => el.onclick = () => {
+    const r = REGULATIONS[el.dataset.i];
+    openSheet(r.title, r.regime, [[t("colRegime"),r.regime],[t("colTopic"),r.cat],[t("colSummary"),r.desc]], r.note);
+  });
+}
+
+/* --- Glossary --- */
+function renderGlossary(c){
+  const rows = GLOSSARY.filter(matches);
+  c.innerHTML = `<div class="panel">${toolbar([],"searchTerms")}
+  <div class="table-scroll"><table><thead><tr>
+    <th>${t("colTerm")}</th><th>${t("colDev")}</th><th>${t("colDef")}</th><th>${t("colSource")}</th><th>${t("colRelated")}</th>
+  </tr></thead><tbody>${rows.length ? rows.map(r => `<tr data-i="${GLOSSARY.indexOf(r)}">
+    <td class="strong">${esc(r.term)}</td><td class="dim">${esc(r.dev)}</td><td class="dim">${esc(r.def)}</td>
+    <td class="dim nowrap">${esc(r.src)}</td>
+    <td>${r.rel.map(x => `<span class="badge b-blue" style="margin:2px 3px 0 0">${esc(x)}</span>`).join("")}</td>
+  </tr>`).join("") : emptyRow(5)}
+  </tbody></table></div></div>`;
+  wireToolbar();
+  c.querySelectorAll("tbody tr[data-i]").forEach(tr => tr.onclick = () => {
+    const r = GLOSSARY[tr.dataset.i];
+    openSheet(r.term, r.dev, [[t("colDef"),r.def],[t("colSource"),r.src],[t("colRelated"),r.rel.join(", ")]], "");
+  });
+}
+
+/* --- Ask Sahayak --- */
+function renderAsk(c){
+  $("#content").classList.add("with-composer");
+  c.innerHTML = `<div class="ask-wrap">
+    <div class="hero"><div class="bot">✦</div>
+      <div><h2>${esc(t("hello"))}</h2><p>${esc(t("heroLine"))}</p></div></div>
+    <div class="quick" id="quickBar">
+      <button data-q="patent">${esc(t("q1"))}</button>
+      <button data-q="gi">${esc(t("q2"))}</button>
+      <button data-q="traditional knowledge">${esc(t("q3"))}</button>
+      <button data-q="ayush">${esc(t("q4"))}</button>
+    </div>
+    <div id="chat"></div>
+  </div>`;
+  $("#quickBar").addEventListener("click", e => {
+    const b = e.target.closest("button"); if(!b) return;
+    $("#question").value = b.textContent; ask(b.dataset.q);
+  });
+  redrawChat();
+}
+
+function redrawChat(){
+
+  const chat = $("#chat");
+
+  if(!chat) return;
+
+
+  chat.innerHTML = state.chat.map(m => {
+
+    // USER MESSAGE
+    if(m.role === "user"){
+
+      return `
+        <div class="message user">
+          ${esc(m.text)}
+        </div>
+      `;
+
+    }
+
+
+    // FORMAT AI ANSWER
+    let answer = esc(m.text);
+
+    // Bold: **text**
+    answer = answer.replace(
+      /\*\*(.*?)\*\*/g,
+      "<strong>$1</strong>"
+    );
+
+    // Headings: ### Heading
+    answer = answer.replace(
+      /^### (.*?)$/gm,
+      "<strong class=\"answer-heading\">$1</strong>"
+    );
+
+    // Bullet points
+    answer = answer.replace(
+      /^- (.*?)$/gm,
+      "<div class=\"answer-bullet\">• $1</div>"
+    );
+
+    // Numbered points
+    answer = answer.replace(
+      /^\d+\.\s(.*?)$/gm,
+      "<div class=\"answer-number\">$1</div>"
+    );
+
+    // New lines
+    answer = answer.replace(
+      /\n/g,
+      "<br>"
+    );
+
+
+    // SOURCE CARDS
+const sourceHtml = (m.sources || [])
+  .slice(0, 3)
+  .map((s, index) => {
+
+    const cleanSource = s.source
+      .replace(/^\d+_/, "")
+      .replace(/\.pdf$/i, "")
+      .replace(/_/g, " ");
+
+    return `
+      <div class="source-card">
+
+        <div class="source-label">
+          SOURCE ${index + 1}
+        </div>
+
+        <div class="source-document">
+          📄 ${esc(cleanSource)}
+        </div>
+
+        <div class="source-page">
+          Page ${esc(String(s.page))}
+        </div>
+
+      </div>
+    `;
+
+  })
+  .join("");
+
+
+    return `
+      <div class="message answer">
+
+        <div class="answer-content">
+          ${answer}
+        </div>
+
+        ${
+          sourceHtml
+            ? `
+              <div class="sources-title">
+                Sources
+              </div>
+
+              <div class="sources-list">
+                ${sourceHtml}
+              </div>
+            `
+            : ""
+        }
+
+      </div>
+    `;
+
+  }).join("");
+
+
+  const last = chat.lastElementChild;
+
+  if(last){
+
+    last.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest"
+    });
+
+  }
+
+}
+
+async function ask(forced){
+
+  const box = $("#question");
+  const q = forced || box.value.trim();
+
+  if(!q) return;
+
+  state.chat.push({
+    role: "user",
+    text: q
+  });
+
+  box.value = "";
+
+  redrawChat();
+
+  const chat = $("#chat");
+
+  const wait = document.createElement("div");
+
+  wait.className = "message answer typing";
+
+wait.innerHTML = `
+  <div class="sahayak-loading">
+    <span class="loading-symbol">✦</span>
+    <span class="loading-text">Sahayak is searching the knowledge base...</span>
+  </div>
+`;
+
+  chat.appendChild(wait);
+
+  chat.scrollTop = chat.scrollHeight;
+
+
+  try {
+
+    const response = await fetch(
+      "http://127.0.0.1:8000/ask",
+      {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          question: q
+        })
+      }
+    );
+
+
+    const data = await response.json();
+
+
+    if(!response.ok){
+
+      throw new Error(
+        data.detail || "Request failed"
+      );
+
+    }
+
+
+    state.chat.push({
+
+      role: "bot",
+
+      text:
+        data.answer ||
+        "No answer was returned.",
+
+      sources:
+        data.sources || []
+
+    });
+
+
+  } catch(error) {
+
+    console.error(error);
+
+    state.chat.push({
+
+      role: "bot",
+
+      text:
+        "I could not connect to the IP-SAKTI backend. " +
+        "Please make sure the FastAPI server is running.",
+
+      sources: []
+
+    });
+
+  }
+
+
+  redrawChat();
+
+}
+
+$("#sendBtn").addEventListener("click", () => ask());
+$("#question").addEventListener("keydown", e => {
+  if(e.key === "Enter" && !e.shiftKey){ e.preventDefault(); ask(); }
+});
+
+/* ---------------- 8. DETAIL SHEET ---------------- */
+
+function openSheet(title, eyebrow, pairs, note){
+  $("#sheetBody").innerHTML = `<p class="eyebrow">${esc(eyebrow)}</p><h3>${esc(title)}</h3>
+    <dl class="kv">${pairs.map(([k,v]) => `<div><dt>${esc(k)}</dt><dd>${/^<span/.test(v) ? v : esc(v)}</dd></div>`).join("")}</dl>
+    ${note ? `<div class="note"><b>${esc(t("about"))}</b><br>${esc(note)}</div>` : ""}
+    <div class="note">${esc(t("disclaimer"))}</div>`;
+  $("#sheetWrap").hidden = false;
+}
+function closeSheet(){ $("#sheetWrap").hidden = true; }
+$("#sheetBg").addEventListener("click", closeSheet);
+$("#sheetClose").addEventListener("click", closeSheet);
+document.addEventListener("keydown", e => { if(e.key === "Escape") closeSheet(); });
+
+/* ---------------- 9. VOICE, STATUS, OFFLINE ---------------- */
+
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const mic = $("#micBtn");
+if(SR){
+  const rec = new SR();
+  rec.onresult = e => { $("#question").value = e.results[0][0].transcript; };
+  rec.onend = () => { mic.classList.remove("listening"); mic.textContent = "🎙"; };
+  mic.onclick = () => {
+    rec.lang = {EN:"en-IN",HI:"hi-IN",TA:"ta-IN",ML:"ml-IN",KN:"kn-IN"}[state.lang];
+    try{ rec.start(); mic.classList.add("listening"); mic.textContent = "⏺"; }catch(err){}
+  };
+} else { mic.disabled = true; mic.title = "Voice input not supported in this browser"; }
+
+function updateStatus(){
+  $("#status").textContent = navigator.onLine ? t("online") : t("offline");
+  $("#dot").classList.toggle("off", !navigator.onLine);
+}
+window.addEventListener("online", updateStatus);
+window.addEventListener("offline", updateStatus);
+
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  navigator.serviceWorker.register("sw.js").catch(() => {});
+}
+
+/* ---------------- 10. START ---------------- */
+initTheme();
+applyLanguage();
+
+</script>
+</body>
+</html>
